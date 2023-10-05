@@ -3,21 +3,36 @@ import "../components/global.css";
 import QuizData from '../quiz-api.json';
 
 const Questions = ({ scores, setScores }) => {
+
+
+
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState([]);
   const [next, setNext] = useState(0);
   const [number, setNumber] = useState(1);
   const [selectedOption, setSelectedOption] = useState(null); // State to store the selected option
-
-  const handleNext = () => {
-    console.log("hello peter");
+  
+  const handleNextAfterTimeout = () => {
     setNext(next + 1);
     setNumber(number + 1);
     setSelectedOption(null); // Reset the selected option when moving to the next question
     if (number > 85) {
       refreshPage();
     }
+  }
+
+  const handleNext = () => {
+    setTimeout(handleNextAfterTimeout, 1500)
+   
   };
+  const handleNextWithoutTimeout = () =>{
+    setNext(next + 1);
+    setNumber(number + 1);
+    setSelectedOption(null); // Reset the selected option when moving to the next question
+    if (number > 85) {
+      refreshPage();
+    }
+  }
   const currentQuestion = QuizData.quiz[next];
   const handleChoices = (option) => {
    
@@ -63,7 +78,11 @@ const Questions = ({ scores, setScores }) => {
           <li>
             {options.map((option, index) => (
               <button
-                onClick={() => handleChoices(option)}
+              
+              onClick={() => {
+                handleChoices(option);
+                handleNext();
+              }}
                 key={index}
                 className={`btn-choice ${selectedOption === option ? (currentQuestion.correctAnswer === option ? 'correct-answer' : 'incorrect-answer') : ''}`}
               >
@@ -74,7 +93,7 @@ const Questions = ({ scores, setScores }) => {
         </ol>
       </div>
       <div className='next-btn'>
-        <button className='next' onClick={handleNext}>NEXT</button>
+        <button className='next' onClick={handleNextWithoutTimeout}>NEXT</button>
       </div>
     </>
   )
